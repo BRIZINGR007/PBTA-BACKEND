@@ -14,3 +14,10 @@ class UserController(APIView):
         serializer.is_valid(raise_exception=True)
         user = self._userservice.create_user(serializer.validated_data)
         return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+
+    def get(self, user_id=None):
+        if user_id:
+            user = UserService.get_user(user_id)
+            return Response(UserSerializer(user).data)
+        all_users = self._userservice.get_all_users()
+        return all_users
