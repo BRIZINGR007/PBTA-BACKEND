@@ -1,8 +1,8 @@
 import jwt
-from decouple import config
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
-from pbta_backend.apps.api.context import set_current_user
+from ..context import set_current_user
+import os
 
 
 class JWTAuthentication(BaseAuthentication):
@@ -13,7 +13,9 @@ class JWTAuthentication(BaseAuthentication):
             return None
 
         try:
-            payload = jwt.decode(token, config("SECRET_KEY"), algorithms=["HS256"])
+            payload = jwt.decode(
+                token, os.environ.get("SECRET_KEY"), algorithms=["HS256"]
+            )
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed("Token has expired")
         except jwt.InvalidTokenError:

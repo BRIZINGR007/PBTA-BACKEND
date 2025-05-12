@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from ..controllers.user import UserController
-from ..serializers.user import UserSerializer
+from ..interfaces.pydantic.user import IPY_SignUp
 
 
 @api_view(["GET"])
@@ -15,10 +15,12 @@ def get_user(request, user_id):
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
-def add_user(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        user_data = serializer.validated_data
-        created_user = UserController().add_user(user_data)
-        return Response(created_user, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+def signup_user(request):
+    user_data = IPY_SignUp(**request.data)
+    return UserController().signup_user(user_data)
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def login_user(request):
+    pass

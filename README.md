@@ -14,3 +14,6 @@
 
 ## Inorder to apply  the migrations  ...
 1. python  pbta_backend/manage.py migrate
+
+## Get the tree of  the directory
+1. tree -I '__pycache__'
