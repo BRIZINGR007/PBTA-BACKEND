@@ -8,10 +8,8 @@ class UserController:
     def __init__(self) -> None:
         self._userservice = UserService()
 
-    def post(self, request) -> Response:
-        serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = self._userservice.create_user(serializer.validated_data)
+    def add_user(self, user_data) -> Response:
+        user = self._userservice.create_user(user_data)
         return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
 
     def get_user(self, user_id) -> Response:
