@@ -7,10 +7,10 @@
 3. python  manage.py startapp app
 
 # Start the Django  Server
-4. python  manage.py runserver
+4. python  pbta_backend/manage.py runserver
 
 ## This  command  we  nees to run everytime  we  make  changes  to  the models.
-1. python  manage.py makemigrations
+1. python  pbta_backend/manage.py makemigrations
 
 ## Inorder to apply  the migrations  ...
-1. python  manage.py migrate
+1. python  pbta_backend/manage.py migrate

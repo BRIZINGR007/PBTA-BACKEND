@@ -2,8 +2,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from pbta_backend.apps.api.controllers.user import UserController
-from pbta_backend.apps.api.serializers.user import UserSerializer
+from ..controllers.user import UserController
+from ..serializers.user import UserSerializer
 
 
 @api_view(["GET"])
