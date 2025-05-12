@@ -11,3 +11,6 @@
 
 ## This  command  we  nees to run everytime  we  make  changes  to  the models.
 1. python  manage.py makemigrations
+
+## Inorder to apply  the migrations  ...
+1. python  manage.py migrate
