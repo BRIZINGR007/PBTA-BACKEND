@@ -1,7 +1,7 @@
 from django.urls import path
-from ..controllers.user import UserController
+
+from pbta_backend.apps.api.routes.user import get_user
 
 urlpatterns = [
-    path("", UserController().as_view(), name="users-list"),
-    path("<int:user_id>/", UserController().as_view(), name="user-detail"),
+    path("get_user/<int:user_id>/", get_user),
 ]
