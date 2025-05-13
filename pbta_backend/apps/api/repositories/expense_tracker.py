@@ -2,7 +2,7 @@ from decimal import Decimal
 from datetime import date
 from uuid import UUID
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from django.forms.models import model_to_dict
 from ..enums.enums import TransactionCategoryEnums, TransactionTypeEnums
 from ..models.expense_tracker import Transactions, TransactionSummaryPerMonth
 
@@ -64,8 +64,23 @@ class ExpenseTrackerRepository:
         except EmptyPage:
             transactions_page = paginator.page(paginator.num_pages)
 
+        transactions_serialized = [
+            model_to_dict(
+                t,
+                fields=[
+                    "id",
+                    "transaction_type",
+                    "transaction_category",
+                    "amount",
+                    "description",
+                    "date",
+                ],
+            )
+            for t in transactions_page.object_list
+        ]
+
         return {
-            "transactions": list(transactions_page.object_list),
+            "transactions": transactions_serialized,
             "total": paginator.count,
             "num_pages": paginator.num_pages,
             "current_page": transactions_page.number,
