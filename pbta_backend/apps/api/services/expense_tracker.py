@@ -7,9 +7,6 @@ class ExpenseTrackerService:
     def __init__(self) -> None:
         self._expense_tracker_repo = ExpenseTrackerRepository()
 
-    def get_all_transactions(self, user_id):
-        pass
-
     def add_transaction(self, user_id, transaction_data):
         amount = Decimal(transaction_data["amount"])
         transaction_type = transaction_data["transaction_type"]

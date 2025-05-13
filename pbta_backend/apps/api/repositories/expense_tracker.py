@@ -1,6 +1,7 @@
 from decimal import Decimal
 from datetime import date
 from uuid import UUID
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from ..enums.enums import TransactionCategoryEnums, TransactionTypeEnums
 from ..models.expense_tracker import Transactions, TransactionSummaryPerMonth
@@ -49,3 +50,23 @@ class ExpenseTrackerRepository:
         summary.save()
 
         return summary
+
+    @staticmethod
+    def get_transactions(user_id, page=1, page_size=10):
+        transactions = Transactions.objects.filter(user_id=user_id).order_by("-date")
+
+        paginator = Paginator(transactions, page_size)
+
+        try:
+            transactions_page = paginator.page(page)
+        except PageNotAnInteger:
+            transactions_page = paginator.page(1)
+        except EmptyPage:
+            transactions_page = paginator.page(paginator.num_pages)
+
+        return {
+            "transactions": list(transactions_page.object_list),
+            "total": paginator.count,
+            "num_pages": paginator.num_pages,
+            "current_page": transactions_page.number,
+        }
