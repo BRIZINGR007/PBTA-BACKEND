@@ -12,4 +12,5 @@ class TransactionInputSerializer(serializers.ModelSerializer):
     date = serializers.DateField()
 
     class Meta:
+        model = Transactions
         fields = ["transaction_type", "amount", "description", "date"]

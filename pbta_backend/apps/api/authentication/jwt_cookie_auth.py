@@ -3,6 +3,7 @@ from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from ..context import set_current_user
 import os
+from types import SimpleNamespace
 
 
 class JWTAuthentication(BaseAuthentication):
@@ -22,4 +23,5 @@ class JWTAuthentication(BaseAuthentication):
             raise AuthenticationFailed("Invalid token")
 
         set_current_user(payload)
-        return (payload, token)
+        user = SimpleNamespace(**payload, is_authenticated=True)
+        return (user, token)
