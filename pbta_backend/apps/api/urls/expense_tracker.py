@@ -1,5 +1,5 @@
 from django.urls import path
 
-from ..routes import user
+from ..routes import expense_tracker
 
-user_url = [path("add-transaction/")]
+expense_tracker_urls = [path("add-transaction/", expense_tracker.add_transaction)]

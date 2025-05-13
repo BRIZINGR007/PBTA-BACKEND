@@ -1,5 +1,3 @@
-import email
-from re import U
 from ..models.user import User
 
 

@@ -30,7 +30,7 @@ class FinancialSummaryPerMonth(models.Model):
 
 class Transactions(models.Model):
     transaction_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, to_field="user_id", on_delete=models.CASCADE)
     transaction_type = models.CharField(
         max_length=30, choices=[(tag.value, tag.value) for tag in TransactionTypeEnums]
     )
