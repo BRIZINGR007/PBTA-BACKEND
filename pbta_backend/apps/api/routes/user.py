@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 
-from ..serializers.user import UserSerializer
+from ..serializers.user import SignupSerializer, LoginSerializer
 
 from ..controllers.user import UserController
 
@@ -17,7 +17,7 @@ def get_user(request, user_id):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def signup_user(request):
-    serializer = UserSerializer(data=request.data)
+    serializer = SignupSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     user_data = serializer.validated_data
     return UserController().signup_user(user_data)
@@ -26,4 +26,7 @@ def signup_user(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def login_user(request):
-    pass
+    serializer = LoginSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    login_data = serializer.validated_data
+    return UserController().login_user(login_data)
