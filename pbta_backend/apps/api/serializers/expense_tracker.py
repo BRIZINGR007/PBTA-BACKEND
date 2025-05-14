@@ -9,11 +9,11 @@ class TransactionInputSerializer(serializers.ModelSerializer):
     )
     amount = serializers.DecimalField(max_digits=10, decimal_places=2)
     description = serializers.CharField(required=False, allow_blank=True)
-    date = serializers.DateField()
+    month = serializers.DateField()
 
     class Meta:
         model = Transactions
-        fields = ["transaction_type", "amount", "description", "date"]
+        fields = ["transaction_type", "amount", "description", "month"]
 
 
 class MonthlyBudgetInputSerializer(serializers.ModelSerializer):
@@ -25,6 +25,26 @@ class MonthlyBudgetInputSerializer(serializers.ModelSerializer):
         fields = ["month", "amount"]
 
 
-class GetTransactionsQuerySerializer(serializers.ModelSerializer):
+class GetTransactionsQuerySerializer(serializers.Serializer):
     page = serializers.IntegerField(min_value=1, default=1)
     month = serializers.DateField()
+
+
+class AddTransactionSummaryByMonthSerializer(serializers.ModelSerializer):
+    month = serializers.DateField()
+
+    class Meta:
+        model = TransactionSummaryPerMonth
+        fields = ["month"]
+
+
+class ResponseTransactionSummaryPerMonthSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransactionSummaryPerMonth
+        fields = "__all__"  # or specify fields manually
+
+
+class ResponseTransactionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transactions
+        fields = "__all__"

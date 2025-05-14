@@ -4,6 +4,11 @@ from datetime import date
 from uuid import UUID
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.forms.models import model_to_dict
+
+from ..serializers.expense_tracker import (
+    ResponseTransactionSummaryPerMonthSerializer,
+    ResponseTransactionsSerializer,
+)
 from ..enums.enums import TransactionCategoryEnums, TransactionTypeEnums
 from ..models.expense_tracker import Transactions, TransactionSummaryPerMonth
 
@@ -15,7 +20,7 @@ class ExpenseTrackerRepository:
             transaction_category = TransactionCategoryEnums.INCOME.value
         else:
             transaction_category = TransactionCategoryEnums.EXPENSES.value
-        month_start = data["date"].replace(day=1)
+        month_start = data["month"].replace(day=1)
         return Transactions.objects.create(
             user_id=user_id,
             transaction_type=data["transaction_type"],
@@ -25,20 +30,31 @@ class ExpenseTrackerRepository:
             month=month_start,
         )
 
-    # @staticmethod
-    # def add_transaction_summary_by_month(user_id: str, month: date):
-    #     month_start = month.replace(day=1)
-    #     summary, _ = TransactionSummaryPerMonth.objects.get_or_create(
-    #         user_id=UUID(user_id),
-    #         month=month_start,
-    #         defaults={
-    #             "total_expense": Decimal("0.00"),
-    #             "total_income": Decimal("0.00"),
-    #             "balance": Decimal("0.00"),
-    #             "monthly_budget": Decimal("0.00"),
-    #         },
-    #     )
-    #     summary.save()
+    @staticmethod
+    def add_transaction_summary_by_user_and_month(user_id, month: date):
+        month_start = month.replace(day=1)
+        summary, _ = TransactionSummaryPerMonth.objects.get_or_create(
+            user_id=UUID(user_id),
+            month=month_start,
+            defaults={
+                "total_expense": Decimal("0.00"),
+                "total_income": Decimal("0.00"),
+                "balance": Decimal("0.00"),
+                "monthly_budget": Decimal("0.00"),
+            },
+        )
+        summary.save()
+
+    @staticmethod
+    def get_transaction_summary_by_user_and_month(user_id, month: date):
+        month_start = month.replace(day=1)
+        try:
+            summary = TransactionSummaryPerMonth.objects.get(
+                user_id=UUID(user_id), month=month_start
+            )
+            return ResponseTransactionSummaryPerMonthSerializer(summary).data
+        except TransactionSummaryPerMonth.DoesNotExist:
+            return None
 
     @staticmethod
     def update_transaction_summary_by_month(
@@ -73,7 +89,7 @@ class ExpenseTrackerRepository:
         month_end = month.replace(day=last_day)
         transactions = Transactions.objects.filter(
             user_id=user_id, month__range=(month_start, month_end)
-        ).order_by("-date")
+        ).order_by("-created_at")
 
         paginator = Paginator(transactions, page_size)
 
@@ -85,17 +101,7 @@ class ExpenseTrackerRepository:
             transactions_page = paginator.page(paginator.num_pages)
 
         transactions_serialized = [
-            model_to_dict(
-                t,
-                fields=[
-                    "id",
-                    "transaction_type",
-                    "transaction_category",
-                    "amount",
-                    "description",
-                    "month",
-                ],
-            )
+            ResponseTransactionsSerializer(t).data
             for t in transactions_page.object_list
         ]
 

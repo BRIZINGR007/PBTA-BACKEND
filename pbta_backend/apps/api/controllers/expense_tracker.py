@@ -42,3 +42,29 @@ class ExpenseTracker:
             {"message": "Succesfully updated the monthly  budget."},
             status=status.HTTP_201_CREATED,
         )
+
+    def add_transaction_summary_by_month(self, data) -> Response:
+        context_data = cast(Dict[str, str], get_current_user())
+        user_id = context_data.get("user_id")
+        month_date = data["month"]
+        self._expense_tracker_repo.add_transaction_summary_by_user_and_month(
+            user_id=user_id, month=month_date
+        )
+        return Response(
+            {"message": "Succesfully Added Transaction ."},
+            status=status.HTTP_201_CREATED,
+        )
+
+    def get_transaction_summary_by_month(self, data) -> Response:
+        context_data = cast(Dict[str, str], get_current_user())
+        user_id = context_data.get("user_id")
+        month_date = data["month"]
+        transaction_summary = (
+            self._expense_tracker_repo.get_transaction_summary_by_user_and_month(
+                user_id=user_id, month=month_date
+            )
+        )
+        return Response(
+            transaction_summary,
+            status=status.HTTP_201_CREATED,
+        )

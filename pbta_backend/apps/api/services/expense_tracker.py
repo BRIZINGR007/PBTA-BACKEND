@@ -10,7 +10,7 @@ class ExpenseTrackerService:
     def add_transaction(self, user_id, transaction_data):
         amount = Decimal(transaction_data["amount"])
         transaction_type = transaction_data["transaction_type"]
-        transaction_date = transaction_data["date"]
+        transaction_date = transaction_data["month"]
 
         with transaction.atomic():
             transaction_record = self._expense_tracker_repo.add_transaction(

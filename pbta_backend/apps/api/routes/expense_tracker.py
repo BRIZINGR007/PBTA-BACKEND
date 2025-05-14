@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from ..controllers.expense_tracker import ExpenseTracker
 from ..serializers.expense_tracker import (
+    AddTransactionSummaryByMonthSerializer,
     GetTransactionsQuerySerializer,
     MonthlyBudgetInputSerializer,
     TransactionInputSerializer,
@@ -32,3 +33,19 @@ def add_monthly_budget(request):
     serializer.is_valid(raise_exception=True)
     monthly_budget_data = serializer.validated_data
     return ExpenseTracker().add_monthly_budget(budget_data=monthly_budget_data)
+
+
+@api_view(["POST"])
+def add_transaction_summary_by_month(request):
+    query_serializer = AddTransactionSummaryByMonthSerializer(data=request.query_params)
+    query_serializer.is_valid(raise_exception=True)
+    validated_data = query_serializer.validated_data
+    return ExpenseTracker().add_transaction_summary_by_month(validated_data)
+
+
+@api_view(["GET"])
+def get_transaction_summary_by_month(request):
+    query_serializer = AddTransactionSummaryByMonthSerializer(data=request.query_params)
+    query_serializer.is_valid(raise_exception=True)
+    validated_data = query_serializer.validated_data
+    return ExpenseTracker().get_transaction_summary_by_month(validated_data)
