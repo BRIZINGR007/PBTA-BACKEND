@@ -1,3 +1,4 @@
+from calendar import monthrange
 from decimal import Decimal
 from datetime import date
 from uuid import UUID
@@ -21,8 +22,23 @@ class ExpenseTrackerRepository:
             transaction_category=transaction_category,
             amount=Decimal(data["amount"]),
             description=data.get("description", ""),
-            date=month_start,
+            month=month_start,
         )
+
+    # @staticmethod
+    # def add_transaction_summary_by_month(user_id: str, month: date):
+    #     month_start = month.replace(day=1)
+    #     summary, _ = TransactionSummaryPerMonth.objects.get_or_create(
+    #         user_id=UUID(user_id),
+    #         month=month_start,
+    #         defaults={
+    #             "total_expense": Decimal("0.00"),
+    #             "total_income": Decimal("0.00"),
+    #             "balance": Decimal("0.00"),
+    #             "monthly_budget": Decimal("0.00"),
+    #         },
+    #     )
+    #     summary.save()
 
     @staticmethod
     def update_transaction_summary_by_month(
@@ -51,8 +67,13 @@ class ExpenseTrackerRepository:
         return summary
 
     @staticmethod
-    def get_transactions(user_id, page=1, page_size=10):
-        transactions = Transactions.objects.filter(user_id=user_id).order_by("-date")
+    def get_transactions(user_id, month, page=1, page_size=10):
+        month_start = month.replace(day=1)
+        last_day = monthrange(month.year, month.month)[1]
+        month_end = month.replace(day=last_day)
+        transactions = Transactions.objects.filter(
+            user_id=user_id, month__range=(month_start, month_end)
+        ).order_by("-date")
 
         paginator = Paginator(transactions, page_size)
 
@@ -72,7 +93,7 @@ class ExpenseTrackerRepository:
                     "transaction_category",
                     "amount",
                     "description",
-                    "date",
+                    "month",
                 ],
             )
             for t in transactions_page.object_list

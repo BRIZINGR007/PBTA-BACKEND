@@ -23,3 +23,8 @@ class MonthlyBudgetInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransactionSummaryPerMonth
         fields = ["month", "amount"]
+
+
+class GetTransactionsQuerySerializer(serializers.ModelSerializer):
+    page = serializers.IntegerField(min_value=1, default=1)
+    month = serializers.DateField()
