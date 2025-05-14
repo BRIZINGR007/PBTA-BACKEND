@@ -13,12 +13,9 @@ class ExpenseTrackerService:
         transaction_date = transaction_data["date"]
 
         with transaction.atomic():
-            # Create transaction
             transaction_record = self._expense_tracker_repo.add_transaction(
                 user_id, transaction_data
             )
-
-            # Update monthly summary
             self._expense_tracker_repo.update_transaction_summary_by_month(
                 user_id=user_id,
                 transaction_type=transaction_type,

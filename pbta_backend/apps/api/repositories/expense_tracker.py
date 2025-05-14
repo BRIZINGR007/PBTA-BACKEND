@@ -14,14 +14,14 @@ class ExpenseTrackerRepository:
             transaction_category = TransactionCategoryEnums.INCOME.value
         else:
             transaction_category = TransactionCategoryEnums.EXPENSES.value
-
+        month_start = data["date"].replace(day=1)
         return Transactions.objects.create(
             user_id=user_id,
             transaction_type=data["transaction_type"],
             transaction_category=transaction_category,
             amount=Decimal(data["amount"]),
             description=data.get("description", ""),
-            date=data["date"],
+            date=month_start,
         )
 
     @staticmethod
@@ -48,7 +48,6 @@ class ExpenseTrackerRepository:
 
         summary.balance = summary.total_income - summary.total_expense
         summary.save()
-
         return summary
 
     @staticmethod
@@ -85,3 +84,18 @@ class ExpenseTrackerRepository:
             "num_pages": paginator.num_pages,
             "current_page": transactions_page.number,
         }
+
+    @staticmethod
+    def add_monthly_budget(user_id, month, amount):
+        month_start = month.replace(day=1)
+        summary, created = TransactionSummaryPerMonth.objects.get_or_create(
+            user_id=user_id,
+            month=month_start,
+            defaults={"monthly_budget": amount},
+        )
+
+        if not created:
+            summary.monthly_budget = amount
+            summary.save()
+
+        return summary

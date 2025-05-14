@@ -30,3 +30,10 @@ def login_user(request):
     serializer.is_valid(raise_exception=True)
     login_data = serializer.validated_data
     return UserController().login_user(login_data)
+
+
+@api_view(["GET"])
+def validate_session(request):
+    return Response(
+        {"message": "Succesfully Validated  Session."}, status=status.HTTP_200_OK
+    )

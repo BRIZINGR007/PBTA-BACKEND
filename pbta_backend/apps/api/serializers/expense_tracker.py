@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models.expense_tracker import Transactions
+from ..models.expense_tracker import TransactionSummaryPerMonth, Transactions
 from ..enums.enums import TransactionTypeEnums
 
 
@@ -14,3 +14,12 @@ class TransactionInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transactions
         fields = ["transaction_type", "amount", "description", "date"]
+
+
+class MonthlyBudgetInputSerializer(serializers.ModelSerializer):
+    month = serializers.DateField()
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        model = TransactionSummaryPerMonth
+        fields = ["month", "amount"]

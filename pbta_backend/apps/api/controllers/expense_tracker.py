@@ -27,3 +27,16 @@ class ExpenseTracker:
         user_id = context_data.get("user_id")
         transactions = self._expense_tracker_repo.get_transactions(user_id, page)
         return Response(transactions, status=status.HTTP_200_OK)
+
+    def add_monthly_budget(self, budget_data) -> Response:
+        context_data = cast(Dict[str, str], get_current_user())
+        user_id = context_data.get("user_id")
+        self._expense_tracker_repo.add_monthly_budget(
+            user_id=user_id,
+            month=budget_data["month"],
+            amount=budget_data["amount"],
+        )
+        return Response(
+            {"message": "Succesfully updated the monthly  budget."},
+            status=status.HTTP_201_CREATED,
+        )
