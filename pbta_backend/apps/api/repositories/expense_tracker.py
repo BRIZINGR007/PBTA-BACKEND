@@ -48,13 +48,22 @@ class ExpenseTrackerRepository:
     @staticmethod
     def get_transaction_summary_by_user_and_month(user_id, month: date):
         month_start = month.replace(day=1)
-        try:
-            summary = TransactionSummaryPerMonth.objects.get(
-                user_id=UUID(user_id), month=month_start
-            )
-            return ResponseTransactionSummaryPerMonthSerializer(summary).data
-        except TransactionSummaryPerMonth.DoesNotExist:
-            return None
+        summary, created = TransactionSummaryPerMonth.objects.get_or_create(
+            user_id=UUID(user_id),
+            month=month_start,
+            defaults={
+                "total_expense": Decimal("0.00"),
+                "total_income": Decimal("0.00"),
+                "balance": Decimal("0.00"),
+                "monthly_budget": Decimal("0.00"),
+            },
+        )
+
+        if created:
+            summary.save()
+
+        # Return the serialized data
+        return ResponseTransactionSummaryPerMonthSerializer(summary).data
 
     @staticmethod
     def update_transaction_summary_by_month(

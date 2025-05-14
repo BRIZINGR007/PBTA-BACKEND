@@ -106,18 +106,20 @@ WSGI_APPLICATION = "pbta_backend.wsgi.application"
 #     }
 # }
 
-DATABASE_URL = config("DATABASE_URL")
-if not DATABASE_URL or DATABASE_URL == "":
-    raise RuntimeError("DATABASE_URL environment variable is not set.")
 
 DATABASES = {
-    "default": dj_database_url.config(
-        default=cast(str, DATABASE_URL),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT", default="5432"),
+        "OPTIONS": {
+            "sslmode": config("DB_SSLMODE", default="require"),
+        },
+    }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
