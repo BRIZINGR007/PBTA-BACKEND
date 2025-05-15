@@ -48,3 +48,9 @@ class ResponseTransactionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transactions
         fields = "__all__"
+
+
+class EditTransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transactions
+        fields = "__all__"

@@ -24,3 +24,15 @@ class ExpenseTrackerService:
             )
 
         return transaction_record
+
+    def edit_transaction(self, user_id, transaction_id, transaction_data):
+        with transaction.atomic():
+            self._expense_tracker_repo.edit_transaction(
+                transaction_id=transaction_id, data=transaction_data
+            )
+            self._expense_tracker_repo.update_transaction_summary_by_month(
+                user_id=user_id,
+                transaction_type=transaction_data["transaction_type"],
+                amount=transaction_data["amount"],
+                transaction_date=transaction_data["month"],
+            )

@@ -68,3 +68,21 @@ class ExpenseTracker:
             transaction_summary,
             status=status.HTTP_201_CREATED,
         )
+
+    def edit_transaction(self, transaction_id, data) -> Response:
+        context_data = cast(Dict[str, str], get_current_user())
+        user_id = context_data.get("user_id")
+        self._expense_tracker_service.edit_transaction(user_id, transaction_id, data)
+        return Response(
+            {"message": "Succesfully  edited  transaction."},
+            status=status.HTTP_201_CREATED,
+        )
+
+    def delete_transaction(self, transaction_id) -> Response:
+        context_data = cast(Dict[str, str], get_current_user())
+        user_id = context_data.get("user_id")
+        self._expense_tracker_repo.delete_transaction(user_id, transaction_id)
+        return Response(
+            {"message": "Succesfully deleted transaction."},
+            status=status.HTTP_200_OK,
+        )
