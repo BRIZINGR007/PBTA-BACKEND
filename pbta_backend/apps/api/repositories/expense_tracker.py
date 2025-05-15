@@ -94,10 +94,9 @@ class ExpenseTrackerRepository:
     @staticmethod
     def get_transactions(user_id, month, page=1, page_size=10):
         month_start = month.replace(day=1)
-        last_day = monthrange(month.year, month.month)[1]
-        month_end = month.replace(day=last_day)
+
         transactions = Transactions.objects.filter(
-            user_id=user_id, month__range=(month_start, month_end)
+            user_id=user_id, month=month_start
         ).order_by("-created_at")
 
         paginator = Paginator(transactions, page_size)
