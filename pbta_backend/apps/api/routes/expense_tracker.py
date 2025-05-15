@@ -3,7 +3,12 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from ..controllers.expense_tracker import ExpenseTracker
-from ..serializers.expense_tracker import TransactionInputSerializer
+from ..serializers.expense_tracker import (
+    AddTransactionSummaryByMonthSerializer,
+    GetTransactionsQuerySerializer,
+    MonthlyBudgetInputSerializer,
+    TransactionInputSerializer,
+)
 
 
 @api_view(["POST"])
@@ -16,11 +21,31 @@ def add_transaction(request):
 
 @api_view(["GET"])
 def get_transactions(request):
-    page = request.query_params.get("page", 1)
-    try:
-        page = int(page)
-        if page < 1:
-            raise ValueError("Page number must be 1 or higher.")
-    except ValueError as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    return ExpenseTracker().get_transactions(page=page)
+    query_serializer = GetTransactionsQuerySerializer(data=request.query_params)
+    query_serializer.is_valid(raise_exception=True)
+    validated_data = query_serializer.validated_data
+    return ExpenseTracker().get_transactions(data=validated_data)
+
+
+@api_view(["PATCH"])
+def add_monthly_budget(request):
+    serializer = MonthlyBudgetInputSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    monthly_budget_data = serializer.validated_data
+    return ExpenseTracker().add_monthly_budget(budget_data=monthly_budget_data)
+
+
+@api_view(["POST"])
+def add_transaction_summary_by_month(request):
+    query_serializer = AddTransactionSummaryByMonthSerializer(data=request.query_params)
+    query_serializer.is_valid(raise_exception=True)
+    validated_data = query_serializer.validated_data
+    return ExpenseTracker().add_transaction_summary_by_month(validated_data)
+
+
+@api_view(["GET"])
+def get_transaction_summary_by_month(request):
+    query_serializer = AddTransactionSummaryByMonthSerializer(data=request.query_params)
+    query_serializer.is_valid(raise_exception=True)
+    validated_data = query_serializer.validated_data
+    return ExpenseTracker().get_transaction_summary_by_month(validated_data)

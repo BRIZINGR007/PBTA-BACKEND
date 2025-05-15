@@ -10,15 +10,12 @@ class ExpenseTrackerService:
     def add_transaction(self, user_id, transaction_data):
         amount = Decimal(transaction_data["amount"])
         transaction_type = transaction_data["transaction_type"]
-        transaction_date = transaction_data["date"]
+        transaction_date = transaction_data["month"]
 
         with transaction.atomic():
-            # Create transaction
             transaction_record = self._expense_tracker_repo.add_transaction(
                 user_id, transaction_data
             )
-
-            # Update monthly summary
             self._expense_tracker_repo.update_transaction_summary_by_month(
                 user_id=user_id,
                 transaction_type=transaction_type,

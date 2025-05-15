@@ -17,7 +17,9 @@ class UserController:
 
     def signup_user(self, user_data) -> Response:
         self._userservice.signup_user(user_data)
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(
+            {"message": "Successfully Signed Up."}, status=status.HTTP_201_CREATED
+        )
 
     def login_user(self, login_data) -> Response:
         try:
