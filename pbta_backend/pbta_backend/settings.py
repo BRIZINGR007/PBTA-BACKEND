@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "pbta-backend.onrender.com",
 ]
+DEBUG = False
 
 
 # Application definition
