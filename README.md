@@ -17,3 +17,6 @@
 
 ## Get the tree of  the directory
 1. tree -I '__pycache__'
+
+##
+1.gunicorn --chdir pbta_backend pbta_backend.wsgi:application
