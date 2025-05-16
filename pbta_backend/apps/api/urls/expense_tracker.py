@@ -14,4 +14,6 @@ expense_tracker_urls = [
         "get-transaction-summary-by-month/",
         expense_tracker.get_transaction_summary_by_month,
     ),
+    path("edit-transaction/", expense_tracker.edit_transaction),
+    path("delete-transaction/", expense_tracker.delete_transaction),
 ]

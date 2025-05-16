@@ -99,28 +99,20 @@ WSGI_APPLICATION = "pbta_backend.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT", default="5432"),
-        "OPTIONS": {
-            "sslmode": config("DB_SSLMODE", default="require"),
-        },
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
+# DATABASE_URL = cast(str, config("DATABASE_URL"))
+# if DATABASE_URL == "" or not DATABASE_URL:
+#     raise ValueError("NOT  CORRECT  DATABASE_URL")
+
+# print("DATABASE_URL", DATABASE_URL)
+
+# DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

@@ -1,8 +1,9 @@
 import jwt
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
+
+from ..utils.jwt import JwtUtils
 from ..context import set_current_user
-import os
 from types import SimpleNamespace
 
 
@@ -14,9 +15,8 @@ class JWTAuthentication(BaseAuthentication):
             return None
 
         try:
-            payload = jwt.decode(
-                token, os.environ.get("SECRET_KEY"), algorithms=["HS256"]
-            )
+            secret_key = JwtUtils.get_secret_key()
+            payload = jwt.decode(token, secret_key, algorithms=["HS256"])
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed("Token has expired")
         except jwt.InvalidTokenError:

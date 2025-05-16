@@ -8,12 +8,6 @@ from ..serializers.user import SignupSerializer, LoginSerializer
 from ..controllers.user import UserController
 
 
-@api_view(["GET"])
-def get_user(request, user_id):
-    user_data = UserController().get_user(user_id)
-    return Response(user_data, status=status.HTTP_200_OK)
-
-
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def signup_user(request):
@@ -37,3 +31,8 @@ def validate_session(request):
     return Response(
         {"message": "Succesfully Validated  Session."}, status=status.HTTP_200_OK
     )
+
+
+@api_view(["POST"])
+def logout(request):
+    return UserController().logout_user()

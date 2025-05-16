@@ -1,10 +1,8 @@
-from calendar import monthrange
 from decimal import Decimal
 from datetime import date
 from uuid import UUID
+from django.db import transaction
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.forms.models import model_to_dict
-
 from ..serializers.expense_tracker import (
     ResponseTransactionSummaryPerMonthSerializer,
     ResponseTransactionsSerializer,
@@ -134,3 +132,48 @@ class ExpenseTrackerRepository:
             summary.save()
 
         return summary
+
+    @staticmethod
+    def edit_transaction(transaction_id, data):
+        transaction = Transactions.objects.get(transaction_id=UUID(transaction_id))
+        if "transaction_type" in data:
+            if data["transaction_type"] == TransactionTypeEnums.SALARY:
+                data["transaction_category"] = TransactionCategoryEnums.INCOME.value
+            else:
+                data["transaction_category"] = TransactionCategoryEnums.EXPENSES.value
+
+        for field, value in data.items():
+            setattr(transaction, field, value)
+        transaction.save()
+
+    @staticmethod
+    def delete_transaction(user_id, transaction_id):
+        with transaction.atomic():
+            # Fetch the transaction
+            transaction_obj = Transactions.objects.get(
+                transaction_id=UUID(transaction_id)
+            )
+
+            # Extract necessary details before deleting
+            transaction_type = transaction_obj.transaction_type
+            amount = transaction_obj.amount
+            transaction_date = transaction_obj.month
+
+            # Delete the transaction
+            transaction_obj.delete()
+
+            # Update the summary to subtract the deleted transaction
+            month_start = transaction_date.replace(day=1)
+
+            summary = TransactionSummaryPerMonth.objects.get(
+                user_id=UUID(user_id),
+                month=month_start,
+            )
+
+            if transaction_type == TransactionTypeEnums.SALARY:
+                summary.total_income -= amount
+            else:
+                summary.total_expense -= amount
+
+            summary.balance = summary.total_income - summary.total_expense
+            summary.save()
