@@ -1,9 +1,10 @@
+from typing import cast
 import jwt
 import datetime
 from decouple import config
 from rest_framework.response import Response
 
-SECRET_KEY = "NABARK_DEB_VERY_SECRET_KEY_ BDHBCJNCWJQNCWJQNSWENWQNKWN"
+SECRET_KEY = cast(str, config("SECRET_KEY"))
 
 
 class JwtUtils:
