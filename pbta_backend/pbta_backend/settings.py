@@ -11,10 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-from typing import cast
-from decouple import config
 import sys
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +28,11 @@ SECRET_KEY = "django-insecure-o@f_$hw#=hr_fp$uhk9(9xx-0=(hr6llsp&-!m(l$lajf4#m_4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "pbta-backend.onrender.com",
+]
 
 
 # Application definition
@@ -53,6 +54,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://pbta-frontend.onrender.com",
 ]
 
 
