@@ -37,3 +37,18 @@ class UserController:
     def get_user(self, user_id) -> Response:
         user = self._userrepo.get_user(user_id)
         return Response(SignupSerializer(user).data)
+
+    def logout_user(self) -> Response:
+        response = Response(
+            {"message": "Successfully logged out"}, status=status.HTTP_200_OK
+        )
+        response.set_cookie(
+            key="jwt",
+            value="",  # Empty value
+            max_age=0,  # Expire immediately
+            httponly=True,  # HTTP-only flag
+            secure=True,  # Secure flag (HTTPS only)
+            samesite="None",  # Allow cross-site requests
+            path="/",  # Ensure cookie is deleted from the correct path
+        )
+        return response
