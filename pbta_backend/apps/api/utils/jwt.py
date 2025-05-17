@@ -45,9 +45,7 @@ class JwtUtils:
     ) -> Response:
         token = cls.create_jwt_token(user)
         response = Response(
-            {
-                "message": message,
-            },
+            {"message": message, "token": token},
             status=status_code,
         )
         return cls.set_jwt_cookie(response, token)
