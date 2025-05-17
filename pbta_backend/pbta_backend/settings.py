@@ -63,6 +63,7 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://pbta-frontend.onrender.com",
+    "https://incomparable-bublanina-b6f15e.netlify.app",
 ]
 
 
