@@ -33,8 +33,9 @@ class JwtUtils:
             value=token,
             httponly=True,
             secure=True,
-            samesite="None",
+            samesite="None",  # Changed for cross-site + incognito support
             max_age=max_age,
+            path="/",  # Optional but recommended
         )
         return response
 
