@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import sys
+import os
 
 from decouple import config
 
@@ -26,6 +27,10 @@ sys.path.insert(0, str(BASE_DIR / "apps"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-o@f_$hw#=hr_fp$uhk9(9xx-0=(hr6llsp&-!m(l$lajf4#m_4"
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -110,7 +115,18 @@ WSGI_APPLICATION = "pbta_backend.wsgi.application"
 #         "NAME": BASE_DIR / "db.sqlite3",
 #     }
 # }
-
+CREDS = {
+    "ENGINE": "django.db.backends.postgresql",
+    "NAME": config("DB_NAME"),
+    "USER": config("DB_USER"),
+    "PASSWORD": config("DB_PASSWORD"),
+    "HOST": config("DB_HOST"),
+    "PORT": config("DB_PORT", default="5432"),
+    "OPTIONS": {
+        "sslmode": config("DB_SSLMODE", default="require"),
+    },
+}
+print("DATABASE  CREDENTIALS  : ", str(CREDS))
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
